@@ -31,7 +31,7 @@ print("Solutions to equation: " + str(sol1) + " and " + str(sol2) + " using exac
 
 D_list = [] # Empty list for plotting D
 for i in x: 
-    D = 2*A*i # Differentiating y = ax^2 + bx + c wrt x
+    D = 2*A*i + B # Differentiating y = ax^2 + bx + c wrt x
     D_list.append(D) # appends values to list for plotting
 print(D_list)
 for i in x: 
