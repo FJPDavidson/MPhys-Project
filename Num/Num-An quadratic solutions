@@ -1,0 +1,27 @@
+import math
+import cmath #complex math module
+import numpy as np
+import matplotlib as mp
+import sympy as sp # a possible way to use symbolic maths for analytical solutions
+
+#Allows user to add any value for coefficients of equation stated
+print("Equation currently takes form as Ax^2 + Bx +C:")
+A = float(input("input value for a"))
+B = float(input("input value for b"))
+C = float(input("input value for c"))
+
+disc = math.pow(B,2) - 4*A*C # determines discriminant of the quadratic equation available
+print(disc)
+
+if disc < 0:
+    print("There are two imaginary solutions") 
+    y = cmath.sqrt(disc) #Calculates imaginary roots
+else:
+    print("There are two real solutions")
+    y = math.sqrt(disc) # square root of discriminant being set to y. Note y needs +ive and -ive.
+    
+sol1 = (-B + y)/(2*A) #positive and negative solutions have been hardcoded in.
+sol2 = (-B - y)/(2*A)
+
+print("Solutions to equation: " + str(sol1) + " and " + str(sol2) + " using exact analytical methods.")
+    
