@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib as mp
 import sympy as sp # a possible way to use symbolic maths for analytical solutions
 
+x = [1,2,3,4,5,6,7,8,9,10] # List of integers for x for graphing purposes. These are used to determine values for D & Z
+
 #Allows user to add any value for coefficients of equation stated
 print("Equation currently takes form as Ax^2 + Bx +C:")
 A = float(input("input value for a"))
@@ -24,4 +26,7 @@ sol1 = (-B + y)/(2*A) #positive and negative solutions have been hardcoded in.
 sol2 = (-B - y)/(2*A)
 
 print("Solutions to equation: " + str(sol1) + " and " + str(sol2) + " using exact analytical methods.")
-    
+
+for i in x:
+    D = 2*A*i
+    print(D)
