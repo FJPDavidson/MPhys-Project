@@ -1,4 +1,4 @@
-import math
+# import math
 import cmath #complex math module
 import numpy as np
 import matplotlib as mp
@@ -27,6 +27,15 @@ sol2 = (-B - y)/(2*A)
 
 print("Solutions to equation: " + str(sol1) + " and " + str(sol2) + " using exact analytical methods.")
 
-for i in x:
-    D = 2*A*i
-    print(D)
+""" Unsure which way to differentiate """
+
+D_list = [] # Empty list for plotting D
+for i in x: 
+    D = 2*A*i # Differentiating y = ax^2 + bx + c wrt x
+    D_list.append(D) # appends values to list for plotting
+print(D_list)
+for i in x: 
+    D = x^2 + (db/da)*x + dc/da # Differentiating y = ax^2 + bx + c wrt a
+    #How is db/da determined?
+    D_list.append(D) # appends values to list for plotting
+print(D_list)
