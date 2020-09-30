@@ -36,15 +36,15 @@ def fps(a,b,c,x,h):
 
 def main():
     # User inputs all values needed for calculations.
-    x_sep = 0.1#float(input("Input separation for each x value: ")) # Determines separation of x values
-    x_lower_lim = -3#float(input("Input lower x limit: ")) # Lower x limit
-    x_upper_lim = 3#float(input("Input Upper x limit: ")) # Upper x limit
+    x_sep = float(input("Input separation for each x value: ")) # Determines separation of x values
+    x_lower_lim = float(input("Input lower x limit: ")) # Lower x limit
+    x_upper_lim = float(input("Input Upper x limit: ")) # Upper x limit
 
 
-    a = 1#float(input("Input a constant: ")) # Value for a
-    b = 1#float(input("Input b constant: ")) # Value for b
-    c = -1#float(input("Input c constant: ")) # Value for c
-    h = 0.1#float(input("Input h value for derivative splice: ")) # Value for h
+    a = float(input("Input a constant: ")) # Value for a
+    b = float(input("Input b constant: ")) # Value for b
+    c = float(input("Input c constant: ")) # Value for c
+    h = float(input("Input h value for derivative splice: ")) # Value for h
 
     x = np.arange(x_lower_lim,x_upper_lim,x_sep) # creates list from 1 to user input
 
@@ -64,7 +64,7 @@ def main():
     #for i in range(1,len(model_list)-1): # for/if loop that identifies turning point of model. Only suitable for 1 turning point in current state.
     #    if ((model_list[i-1] < model_list[i] and model_list[i+1] < model_list[i]) or (model_list[i-1] > model_list[i] and model_list[i+1] > model_list[i])):
     #        print("model turning point is approximately at coordinates: " + str(x[i]) + "," + str(model_list[i]))
-    
+
     fig, ax = plt.subplots()
     ax.plot(x, model_list)
     ax.plot(x,fps_list)
