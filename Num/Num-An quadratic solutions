@@ -1,101 +1,78 @@
-print("hello")
+# import math
+#print("hello")
 import math
 import cmath #complex math module
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-import sympy as sp # a possible way to use symbolic maths for analytical solutions
+#import sympy as sp # a possible way to use symbolic maths for analytical solutions
 
 def model(a,b,c,x): # function that creates the model that is used
 
-    y = a*math.pow(x,2) + b*x + c
+    y = a*math.pow(x,2) + b*x + c # Arbitary quadratic formula
+
+    return y
+def model_da(x):
+
+    y = math.pow(x,2)
 
     return y
 
-def quadratic(a,b,c,sol1,sol2):
-    disc = math.pow(B,2) - 4*A*C # determines discriminant of the quadratic equation available
-    print(disc)
+def model_db(x):
 
-    if disc < 0:
-        print("There are two imaginary solutions")
-        d = cmath.sqrt(disc) #Calculates imaginary roots
-    else:
-        print("There are two real solutions")
-        d = math.sqrt(disc) # square root of discriminant being set to y. Note y needs +ive and -ive.
+    y = x
 
-    sol1 = (-B + d)/(2*A) #positive and negative solutions have been hardcoded in.
-    sol2 = (-B - d)/(2*A)
+    return y
 
-    return sol1,sol2
-
-def fps(?): # function that numerically determines turning point coordinate to model used
-    #for i in x:
-    #if model[i]
-    p1 = model(a,b,c,(x+2h))
-    p2 = model(a,b,c,(x+h))
-    p3 = model(a,b,c,(x-h))
-    p4 = model(a,b,c,(x-2h))
+def fps(a,b,c,x,h):
+    # function that numerically determines turning point coordinate to model used. f'(a,b,c) = -f(a-2h,b-2h,c-2h)+.... see wiki for Five-point stencil
+    p1 = model((a+(2*h)),(b+(2*h)),(c+(2*h)),x)
+    p2 = model((a+h),(b+h),(c+h),x)
+    p3 = model((a-h),(b-h),(c-h),x)
+    p4 = model((a-(2*h)),(b-(2*h)),(c-(2*h)),x)
     y_prime = (-p1 + 8*p2 - 8*p3 + p4)/(12*h)
 
     return y_prime
 
 def main():
-    # user inputs all values needed for calculations.
-    x_lim = float(input("Input limit for x (>0).")) # determines range in x
-    x_sep = float(input("Input separation for each x value.")) # determines separation of x values
+    # User inputs all values needed for calculations.
+    x_sep = float(input("Input separation for each x value: ")) # Determines separation of x values
+    x_lower_lim = float(input("Input lower x limit: ")) # Lower x limit
+    x_upper_lim = float(input("Input Upper x limit: ")) # Upper x limit
 
-    a = 1.0 #will be user input
-    b = 3.0 #will be user input
-    c = 2.0 #will be user input
-    h = 0.2 #will be user input
-    x = [range(1,x_lim,x_sep)] #creates list from 1 to user input
 
-    model = [] # Empty list that will contain how the model changes with x for set parameters
-    for i in x:
-        y = model(a,b,c,x)
-        model.append(y)
+    a = float(input("Input a constant: ")) # Value for a
+    b = float(input("Input b constant: ")) # Value for b
+    c = float(input("Input c constant: ")) # Value for c
+    h = float(input("Input h value for derivative splice: ")) # Value for h
 
+    x = np.arange(x_lower_lim,x_upper_lim,x_sep) # creates list from 1 to user input
+
+    model_list = [] # Empty lists that will contain how the model changes with x for set parameters
+    fps_list = []
+    model_da_list = []
+    model_db_list = []
+
+    for i in x: #for loop that calculates all model values and appends them to list
+        model_list.append(model(a,b,c,i))
+        fps_list.append(fps(a,b,c,i,h))
+        model_da_list.append(model_da(i))
+        model_db_list.append(model_db(i))
+        #print("For x co-ordinate: " + str(i))
+        #print("The approximate value of the derivative is: " + str(y_diff))
+
+    #for i in range(1,len(model_list)-1): # for/if loop that identifies turning point of model. Only suitable for 1 turning point in current state.
+    #    if ((model_list[i-1] < model_list[i] and model_list[i+1] < model_list[i]) or (model_list[i-1] > model_list[i] and model_list[i+1] > model_list[i])):
+    #        print("model turning point is approximately at coordinates: " + str(x[i]) + "," + str(model_list[i]))
 
     fig, ax = plt.subplots()
-    ax.plot(x, model)
+    ax.plot(x, model_list)
+    ax.plot(x,fps_list)
+    #ax.plot(x, model_da_list)
+    #ax.plot(x, model_db_list)
+    ax.legend(["Model","5PS model","Differentiated model wrt a", "Differentiated model wrt b"])
+    ax.set_xlabel("x")
+    ax.set_ylabel("Model")
     plt.show()
 
-#if __name__ == __main__:
 main()
-"""
-x = [1,2,3,4,5,6,7,8,9,10] # List of integers for x for graphing purposes. These are used to determine values for D & Z
-
-#Allows user to add any value for coefficients of equation stated
-print("Equation currently takes form as Ax^2 + Bx +C:")
-A = float(input("input value for a"))
-B = float(input("input value for b"))
-C = float(input("input value for c"))
-
-disc = math.pow(B,2) - 4*A*C # determines discriminant of the quadratic equation available
-print(disc)
-
-if disc < 0:
-    print("There are two imaginary solutions")
-    y = cmath.sqrt(disc) #Calculates imaginary roots
-else:
-    print("There are two real solutions")
-    y = math.sqrt(disc) # square root of discriminant being set to y. Note y needs +ive and -ive.
-
-sol1 = (-B + y)/(2*A) #positive and negative solutions have been hardcoded in.
-sol2 = (-B - y)/(2*A)
-
-print("Solutions to equation: " + str(sol1) + " and " + str(sol2) + " using exact analytical methods.")
-
-###Unsure which way to differentiate
-
-D_list = [] # Empty list for plotting D
-for i in x:
-    D = 2*A*i + B # Differentiating y = ax^2 + bx + c wrt x
-    D_list.append(D) # appends values to list for plotting
-print(D_list)
-for i in x:
-    D = x^2 + (db/da)*x + dc/da # Differentiating y = ax^2 + bx + c wrt a
-    #How is db/da determined?
-    D_list.append(D) # appends values to list for plotting
-print(D_list)
-"""
