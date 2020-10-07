@@ -1,5 +1,3 @@
-# import math
-#print("hello")
 import math
 import cmath #complex math module
 import numpy as np
@@ -10,97 +8,106 @@ import matplotlib.pyplot as plt
 def model(a,b,c,d,x): # function that creates the model that is used
 
     #y = a*math.pow(x,3) + b*math.pow(x,2) + c*x + d # Arbitary cubic equation
-    y = a*math.exp(b*x) + c + d # Arbitary exponential equation
+    #y = a*math.exp(b*x) + c + d # Arbitary exponential equation
+    #y = math.exp(x*math.pow(b,(a*c))) + math.pow(x,2)*math.pow(d,c) # Check Phone camera. The rest of these are random test functions
+    #y = math.pow(a,b*(x-c))
+    y = math.exp(x/(a*b)) + c*math.pow(x,d)
+    #y = math.log(x*math.pow(b,c)) + math.pow(x,a*b)
 
     return y
 
 def model_da(a,b,c,d,x,h_a): # Model differentiated with respect to a
 
     #y = math.pow(x,3)
-    y = math.exp(b*x)
+    #y = math.exp(b*x)
+    #y = c*x*math.log(b)*math.pow(b,(a*c)*math.exp(x*math.pow(b,a*c)))
+    #y = b*(x-c)*math.pow(a,b*(x-c)-1)
+    y = -(1/(math.pow(a,2)*b))*x*math.log(math.exp(1))*math.exp(x/(a*b))
+    #y = b*math.log(x)*math.pow(x,(a*b))
 
     return y
 
 def model_db(a,b,c,d,x,h_b): # Model differentiated with respect to b
 
     #y = math.pow(x,2)
-    y = a*b*math.exp(b*x)
+    #y = a*b*math.exp(b*x)
+    #y = a*c*x*math.pow(b,(a*c-1))*math.exp(x*math.pow(b,a*c))
+    #y = math.log(a)*(x-c)*math.pow(a,b*(x-c))
+    y = -(1/(a*math.pow(b,2)))*x*math.log(math.exp(1))*math.exp(x/(a*b))
+    #y = a*math.log(x)*math.pow(x,(a*b)) + c/b
 
     return y
 
 def model_dc(a,b,c,d,x,h_c): # Model differentiated with respect to a
 
     #y = x
-    y = 1
+    #y = 1
+    #y = x*(a*math.log(b)*math.pow(b,(a*c))*math.exp(x*math.pow(b,(a*c))) + x*math.pow(d,c)*math.log(d))
+    #y = b*math.log(a)*(-math.pow(a,b*(x-c)))
+    y = math.pow(x,d)
+    #y = math.log(b)
 
     return y
 
-def model_dd(a,b,c,d,x,h_c): # Model differentiated with respect to d
+def model_dd(a,b,c,d,x,h_d): # Model differentiated with respect to d
 
-    y = 1
+    #y = 1
+    #y = 1
+    #y = c*math.pow(x,2)*math.pow(d,c-1)
+    #y = 0
+    y = c*math.pow(x,d)*math.log(x)
+    #y = 0
 
     return y
 
-
-"""
-===DEPRECIATED===
 def fps_a(a,b,c,d,x,h_a):
     # function that numerically determines turning point coordinate to model used. f'(a,b,c) = -f(a-2h,b-2h,c-2h)+.... see wiki for Five-point stencil
-    p1 = model_da((a+(2*h_a)),b,c,d,x,h_a)
-    p2 = model_da((a+h_a),b,c,d,x,h_a)
-    p3 = model_da((a-h_a),b,c,d,x,h_a)
-    p4 = model_da((a-(2*h_a)),b,c,d,x,h_a)
+
+    p1 = model((a+(2*h_a)),b,c,d,x)
+    p2 = model((a+h_a),b,c,d,x)
+    p3 = model((a-h_a),b,c,d,x)
+    p4 = model((a-(2*h_a)),b,c,d,x)
     y_a = (-p1 + 8*p2 - 8*p3 + p4)/(12*h_a)
 
     return y_a
-"""
-def fps_a(a,b,c,d,x,h_a):
-        # Approximates differentiated model (wrt a) and returns end value to main.
-    p1 = model_da(a,b,c,d,x+(2*h_a),h_a)
-    p2 = model_da(a,b,c,d,x+h_a,h_a)
-    p3 = model_da(a,b,c,d,x-h_a,h_a)
-    p4 = model_da(a,b,c,d,x-(2*h_a),h_a)
-    y_a = (-p1 + 8*p2 - 8*p3 + p4)/(12*h_a)
-
-    return y_a
-
 
 def fps_b(a,b,c,d,x,h_b):
-    # Approximates differentiated model (wrt b) and returns end value to main.
-    p1 = model_db(a,b,c,d,x+(2*h_b),h_b)
-    p2 = model_db(a,b,c,d,x+h_b,h_b)
-    p3 = model_db(a,b,c,d,x-h_b,h_b)
-    p4 = model_db(a,b,c,d,x-(2*h_b),h_b)
-    y_b = (-p1 + 8*p2 - 8*p3 + p4)/(12*h_b)
+    # function that numerically determines turning point coordinate to model used. f'(a,b,c) = -f(a-2h,b-2h,c-2h)+.... see wiki for Five-point stencil
 
+    p1 = model(a,b+(2*h_b),c,d,x)
+    p2 = model(a,b+h_b,c,d,x)
+    p3 = model(a,b-h_b,c,d,x)
+    p4 = model(a,b-(2*h_b),c,d,x)
+    y_b = (-p1 + 8*p2 - 8*p3 + p4)/(12*h_b)
 
     return y_b
 
 def fps_c(a,b,c,d,x,h_c):
-    # Approximates differentiated model (wrt c) and returns end value to main.
-    p1 = model_db(a,b,c,d,x+(2*h_c),h_c)
-    p2 = model_db(a,b,c,d,x+h_c,h_c)
-    p3 = model_db(a,b,c,d,x-h_c,h_c)
-    p4 = model_db(a,b,c,d,x-(2*h_c),h_c)
+    # function that numerically determines turning point coordinate to model used. f'(a,b,c) = -f(a-2h,b-2h,c-2h)+.... see wiki for Five-point stencil
+
+    p1 = model(a,b,c+(2*h_c),d,x)
+    p2 = model(a,b,c+h_c,d,x)
+    p3 = model(a,b,c-h_c,d,x)
+    p4 = model(a,b,c-(2*h_c),d,x)
     y_c = (-p1 + 8*p2 - 8*p3 + p4)/(12*h_c)
 
     return y_c
 
 def fps_d(a,b,c,d,x,h_d):
-    # Approximates differentiated model (wrt d) and returns end value to main.
-    p1 = model_db(a,b,c,d,x+(2*h_d),h_d)
-    p2 = model_db(a,b,c,d,x+h_d,h_d)
-    p3 = model_db(a,b,c,d,x-h_d,h_d)
-    p4 = model_db(a,b,c,d,x-(2*h_d),h_d)
+    # function that numerically determines turning point coordinate to model used. f'(a,b,c) = -f(a-2h,b-2h,c-2h)+.... see wiki for Five-point stencil
+
+    p1 = model(a,b,c,d+(2*h_d),x)
+    p2 = model(a,b,c,d+h_d,x)
+    p3 = model(a,b,c,d-h_d,x)
+    p4 = model(a,b,c,d-(2*h_d),x)
     y_d = (-p1 + 8*p2 - 8*p3 + p4)/(12*h_d)
 
     return y_d
 
-
 def main():
     # User inputs all values needed for calculations.
     x_sep = 0.1#float(input("Input separation for each x value: ")) # Determines separation of x values
-    x_lower_lim = -3#float(input("Input lower x limit: ")) # Lower x limit
+    x_lower_lim = 0.1#float(input("Input lower x limit: ")) # Lower x limit
     x_upper_lim = 3#float(input("Input Upper x limit: ")) # Upper x limit
 
 
@@ -109,17 +116,17 @@ def main():
     c = -2#float(input("Input c constant: ")) # Value for c
     d = 3#float(input("Input d constant: ")) # Value for d
 
-    h_per = 50 #float(input("Input % of variable h will take: ")) # Value for h
+    h_per = 1 #float(input("Input 1 tenth of a % of variable h will take: ")) # Value for h
     h_list = [5,25,50,75,95] # List using different h values for seeing how h affects results
-    h_a = math.sqrt(math.pow(a,2)) * (h_per/100) # Caluclates h wrt the 4 variables hardcoded into model
-    h_b = math.sqrt(math.pow(b,2)) * (h_per/100)
-    h_c = math.sqrt(math.pow(c,2)) * (h_per/100)
-    h_d = math.sqrt(math.pow(d,2)) * (h_per/100)
+    h_a = math.sqrt(math.pow(a,2)) * (h_per/1000) # Caluclates h wrt the 4 variables hardcoded into model
+    h_b = math.sqrt(math.pow(b,2)) * (h_per/1000)
+    h_c = math.sqrt(math.pow(c,2)) * (h_per/1000)
+    h_d = math.sqrt(math.pow(d,2)) * (h_per/1000)
 
     x = np.arange(x_lower_lim,x_upper_lim,x_sep) # creates list from 1 to user input
 
     model_list = [] # Empty lists that will contain how the model changes with x for set parameters
-    fps_a_list = []    #Primarily useful for graphs
+    fps_a_list = [] #Primarily useful for graphs
     fps_b_list = []
     fps_c_list = []
     fps_d_list = []
@@ -129,6 +136,7 @@ def main():
     model_dd_list = []
 
     array_list = [] # List of arrays containing how model differentiated wrt its separate parameters. Each array is shape (3,)
+
     for i in x:
         #for loop that calculates all model values and appends them to list
         array_list.append(np.array([model_da(a,b,c,d,i,h_a),model_db(a,b,c,d,i,h_b),model_dc(a,b,c,d,i,h_c),model_dd(a,b,c,d,i,h_d)]))
@@ -143,33 +151,54 @@ def main():
         fps_c_list.append(fps_c(a,b,c,d,i,h_c))
         fps_d_list.append(fps_d(a,b,c,d,i,h_d))
 
+    test_600 = []
+    test_700 = []
+    test_800 = []
+    test_900 = []
+    for i in x:
+        h_a = 600/1000
+        test_600.append(fps_a(a,b,c,d,i,h_a))
+    for i in x:
+        h_a = 700/1000
+        test_700.append(fps_a(a,b,c,d,i,h_a))
+    for i in x:
+        h_a = 800/1000
+        test_800.append(fps_a(a,b,c,d,i,h_a))
+    for i in x:
+        h_a = 900/1000
+        test_900.append(fps_a(a,b,c,d,i,h_a))
+
+
+
+    fig, ax1 = plt.subplots()
+    ax1.plot(x,test_600)
+    ax1.plot(x,test_700)
+    ax1.plot(x,test_800)
+    ax1.plot(x,test_900)
+    ax1.legend(["h=0.6","h=0.7","h=0.8","h=0.9"])
+    ax1.set_xlabel("x")
+    ax1.set_ylabel("Model")
+    #plt.show()
+
+
     D_transpose = np.column_stack(array_list) # Stacks all arrays in array_list together as they all have the same shape. This is transposed D
     D = D_transpose.transpose() # Determines D matrix by transposing D_transpose
+    #print(model_da_list[0] - fps_a_list[0])
+    print(D)
 
-    """
-    ===DEPRECIATED===
-    for i in x: #for loop that calculates all model values and appends them to list
-        model_list.append(model(a,b,c,d,i))
-        model_da_list.append(model_da(a,b,c,d,i,h_a))
-        model_db_list.append(model_db(a,b,c,d,i,h_b))
-        fps_a_list.append(fps_a(a,b,c,d,i,h_a))
-        fps_b_list.append(fps_b(a,b,c,d,i,h_b))
-        fps_c_list.append(fps_c(a,b,c,d,i,h_c))
-
-    """
 
     fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
     ax.plot(x, model_list)
-    #ax.plot(x, fps_a_list)
+    ax.plot(x, fps_a_list)
     ax.plot(x, fps_b_list)
-    #ax.plot(x, fps_c_list)
-    #ax.plot(x, fps_d_list)
-    #ax.plot(x, model_da_list)
+    ax.plot(x, fps_c_list)
+    ax.plot(x, fps_d_list)
+    ax.plot(x, model_da_list)
     ax.plot(x, model_db_list)
-    #ax.plot(x, model_dc_list)
-    #ax.plot(x, model_dd_list)
+    ax.plot(x, model_dc_list)
+    ax.plot(x, model_dd_list)
 
-    ax.legend(["Model","5PS wrt b","Differentiated model wrt b"])
+    ax.legend(["Model","fps_d","model_dd"])
     ax.set_xlabel("x")
     ax.set_ylabel("Model")
     plt.show()
