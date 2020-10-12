@@ -117,7 +117,6 @@ def main():
     d = 3#float(input("Input d constant: ")) # Value for d
 
     h_per = 1 #float(input("Input 1 tenth of a % of variable h will take: ")) # Value for h
-    h_list = [5,25,50,75,95] # List using different h values for seeing how h affects results
     h_a = math.sqrt(math.pow(a,2)) * (h_per/1000) # Caluclates h wrt the 4 variables hardcoded into model
     h_b = math.sqrt(math.pow(b,2)) * (h_per/1000)
     h_c = math.sqrt(math.pow(c,2)) * (h_per/1000)
@@ -150,7 +149,7 @@ def main():
         fps_b_list.append(fps_b(a,b,c,d,i,h_b))
         fps_c_list.append(fps_c(a,b,c,d,i,h_c))
         fps_d_list.append(fps_d(a,b,c,d,i,h_d))
-
+    """
     test_600 = []
     test_700 = []
     test_800 = []
@@ -171,6 +170,7 @@ def main():
 
 
     fig, ax1 = plt.subplots()
+    ax1.plot(x,model_da_list,'-.')
     ax1.plot(x,test_600)
     ax1.plot(x,test_700)
     ax1.plot(x,test_800)
@@ -179,7 +179,7 @@ def main():
     ax1.set_xlabel("x")
     ax1.set_ylabel("Model")
     #plt.show()
-
+    """
 
     D_transpose = np.column_stack(array_list) # Stacks all arrays in array_list together as they all have the same shape. This is transposed D
     D = D_transpose.transpose() # Determines D matrix by transposing D_transpose
@@ -188,17 +188,17 @@ def main():
 
 
     fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
-    ax.plot(x, model_list)
+    ax.plot(x, model_list, '-.')
     ax.plot(x, fps_a_list)
     ax.plot(x, fps_b_list)
     ax.plot(x, fps_c_list)
     ax.plot(x, fps_d_list)
-    ax.plot(x, model_da_list)
-    ax.plot(x, model_db_list)
-    ax.plot(x, model_dc_list)
-    ax.plot(x, model_dd_list)
+    ax.plot(x, model_da_list, '--')
+    ax.plot(x, model_db_list, '--')
+    ax.plot(x, model_dc_list, '--')
+    ax.plot(x, model_dd_list, '--')
 
-    ax.legend(["Model","fps_d","model_dd"])
+    ax.legend(["Model","fps_a","fps_b","fps_c","fps_d","model_da","model_db","model_dc","model_dd"])
     ax.set_xlabel("x")
     ax.set_ylabel("Model")
     plt.show()
