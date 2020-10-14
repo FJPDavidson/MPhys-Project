@@ -1,5 +1,4 @@
 import math
-import cmath #complex math module
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -104,6 +103,7 @@ def fps_d(a,b,c,d,x,h_d):
 
     return y_d
 
+
 def main():
     # User inputs all values needed for calculations.
     x_sep = 0.1#float(input("Input separation for each x value: ")) # Determines separation of x values
@@ -134,6 +134,9 @@ def main():
     model_dc_list = []
     model_dd_list = []
 
+    model_2nd_da_list = []
+    fps_2nd_a_list = []
+
     array_list = [] # List of arrays containing how model differentiated wrt its separate parameters. Each array is shape (3,)
 
     for i in x:
@@ -149,7 +152,9 @@ def main():
         fps_b_list.append(fps_b(a,b,c,d,i,h_b))
         fps_c_list.append(fps_c(a,b,c,d,i,h_c))
         fps_d_list.append(fps_d(a,b,c,d,i,h_d))
-    """
+    
+
+    
     test_600 = []
     test_700 = []
     test_800 = []
@@ -175,11 +180,11 @@ def main():
     ax1.plot(x,test_700)
     ax1.plot(x,test_800)
     ax1.plot(x,test_900)
-    ax1.legend(["h=0.6","h=0.7","h=0.8","h=0.9"])
+    ax1.legend(["Model","h=0.6","h=0.7","h=0.8","h=0.9"])
     ax1.set_xlabel("x")
     ax1.set_ylabel("Model")
-    #plt.show()
-    """
+    plt.show()
+    
 
     D_transpose = np.column_stack(array_list) # Stacks all arrays in array_list together as they all have the same shape. This is transposed D
     D = D_transpose.transpose() # Determines D matrix by transposing D_transpose
@@ -201,6 +206,6 @@ def main():
     ax.legend(["Model","fps_a","fps_b","fps_c","fps_d","model_da","model_db","model_dc","model_dd"])
     ax.set_xlabel("x")
     ax.set_ylabel("Model")
-    plt.show()
+    #plt.show()
 
 main()
