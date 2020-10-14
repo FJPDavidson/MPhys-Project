@@ -1,0 +1,78 @@
+import math
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+
+def model(a,b,c,d,e,x):
+
+    y = a*math.pow(x,4) + b*math.pow(x,3) + c*math.pow(x,2) + d*x + e
+
+    return y
+
+def model_da(x):
+
+    y = math.pow(x,4)
+
+    return y
+
+def param(par,h):
+
+    p1 = par + 2*h 
+    p2 = par + h
+    p3 = par - h
+    p4 = par - 2*h
+
+    return [p1, p2, p3, p4]
+
+def fps(a,b,c,d,e,h,x):
+
+    p = []
+    for item in a:
+        p.append(model(item,b,c,d,e,x))
+
+    y = (-p[0] + 8*p[1] - 8*p[2] + p[3])
+
+    return y
+
+def main():
+
+    a = 4#input("chuck something in for a")
+    b = 3#input("chuck something in for b")
+    c = 2#input("chuck something in for c")
+    d = 1#input("chuck something in for d")
+    e = 1#input("chuck something in for e")
+
+    h = 1#float(input("chuck something in for h (%)"))
+
+    h_a = a*(h/100)
+    h_b = b*(h/100)
+    h_c = c*(h/100)
+    h_d = d*(h/100)
+    h_e = e*(h/100)
+
+    x_sep = 0.1#float(input("Input separation for each x value: ")) # Determines separation of x values
+    x_lower_lim = -3#float(input("Input lower x limit: ")) # Lower x limit
+    x_upper_lim = 3#float(input("Input Upper x limit: ")) # Upper x limit
+
+    x = np.arange(x_lower_lim,x_upper_lim,x_sep) # creates list from 1 to user input
+
+    model_list = []
+    model_da_list = []
+    fps_list = []
+    fps_list_test = []
+    A_list = param(a,h_a)
+    for i in x:
+        model_list.append(model(a,b,c,d,e,i))
+        model_da_list.append(i)
+        fps_list.append(fps(A_list,b,c,d,e,h,i)/(12*h_a))
+        fps_list_test.append(fps(A_list,b,c,d,e,h,i))
+
+
+    fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
+    ax.plot(x, model_list, '-.')
+    ax.plot(x,model_da_list, '--')
+    ax.plot(x, fps_list)
+    #ax.plot(x, fps_list_test,'--')
+    plt.show()
+   
+main()
