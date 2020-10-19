@@ -103,7 +103,19 @@ def fps_d(a,b,c,d,x,h_d):
 
     return y_d
 
+def Num_An_ratio(num,an):
+    
+    if an == 0:
+        an =0.000001 
 
+    r = float(num)/float(an)
+    if r < 0.00000001:
+        r = 1
+    else:
+        r = float(num)/float(an)
+
+    return r
+    
 def main():
     # User inputs all values needed for calculations.
     x_sep = 0.1#float(input("Input separation for each x value: ")) # Determines separation of x values
@@ -133,6 +145,10 @@ def main():
     model_db_list = []
     model_dc_list = []
     model_dd_list = []
+    err_ratio_a_list = []
+    err_ratio_b_list = []
+    err_ratio_c_list = []
+    err_ratio_d_list = []
 
     model_2nd_da_list = []
     fps_2nd_a_list = []
@@ -152,9 +168,25 @@ def main():
         fps_b_list.append(fps_b(a,b,c,d,i,h_b))
         fps_c_list.append(fps_c(a,b,c,d,i,h_c))
         fps_d_list.append(fps_d(a,b,c,d,i,h_d))
-    
 
+    for i in range(0,len(model_list)):
+        print(model_da_list[i])
+        err_ratio_a_list.append(Num_An_ratio(fps_a_list[i],model_da_list[i]))
+        err_ratio_b_list.append(Num_An_ratio(fps_b_list[i],model_db_list[i]))
+        err_ratio_c_list.append(Num_An_ratio(fps_c_list[i],model_dc_list[i]))
+        err_ratio_d_list.append(Num_An_ratio(fps_d_list[i],model_dd_list[i]))
     
+    fig, ax2 = plt.subplots()
+    ax2.plot(x,err_ratio_a_list,"-")
+    ax2.plot(x,err_ratio_b_list,"--")
+    ax2.plot(x,err_ratio_c_list,"-.")
+    ax2.plot(x,err_ratio_d_list,":")
+    ax2.legend(["a_error","b_error","c_error","d_error"])
+    ax2.set_xlabel("x")
+    ax2.set_ylabel("Num/An Error Ratio")
+    print(err_ratio_d_list)
+    plt.show()
+    """
     test_600 = []
     test_700 = []
     test_800 = []
@@ -183,13 +215,13 @@ def main():
     ax1.legend(["Model","h=0.6","h=0.7","h=0.8","h=0.9"])
     ax1.set_xlabel("x")
     ax1.set_ylabel("Model")
-    plt.show()
+    #plt.show()
     
 
     D_transpose = np.column_stack(array_list) # Stacks all arrays in array_list together as they all have the same shape. This is transposed D
     D = D_transpose.transpose() # Determines D matrix by transposing D_transpose
     #print(model_da_list[0] - fps_a_list[0])
-    print(D)
+    #print(D)
 
 
     fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
@@ -207,5 +239,5 @@ def main():
     ax.set_xlabel("x")
     ax.set_ylabel("Model")
     #plt.show()
-
+    """
 main()
