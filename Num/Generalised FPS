@@ -2,77 +2,113 @@ import math
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-
-def model(a,b,c,d,e,x):
-
-    y = a*math.pow(x,4) + b*math.pow(x,3) + c*math.pow(x,2) + d*x + e
-
-    return y
-
-def model_da(x):
-
-    y = math.pow(x,4)
-
-    return y
-
-def param(par,h):
-
-    p1 = par + 2*h 
-    p2 = par + h
-    p3 = par - h
-    p4 = par - 2*h
-
-    return [p1, p2, p3, p4]
-
-def fps(a,b,c,d,e,h,x):
-
-    p = []
-    for item in a:
-        p.append(model(item,b,c,d,e,x))
-
-    y = (-p[0] + 8*p[1] - 8*p[2] + p[3])
-
-    return y
+from MPhys_param_class import create_parameter
+from MPhys_functions import *
 
 def main():
 
-    a = 4#input("chuck something in for a")
-    b = 3#input("chuck something in for b")
-    c = 2#input("chuck something in for c")
-    d = 1#input("chuck something in for d")
-    e = 1#input("chuck something in for e")
+    # Reads in text file which lists all parameters being used in the simulation. it is in the form "name,value,h_step"
+    filein = open("param_csv","r")
+        
+    parameter_name_list = []
+    parameter_value_list = []
+    parameter_hstep_list = []
+    
+    for line in filein.readlines():
+        tokens = line.split(",")
+        parameter_name_list.append(tokens[0])
+        parameter_value_list.append(tokens[1])
+        parameter_hstep_list.append(tokens[2])
+    filein.close()
 
-    h = 1#float(input("chuck something in for h (%)"))
+    model_parameters = []
+    for item in range(0,len(parameter_name_list)):
+        model_parameters.append(create_parameter(parameter_name_list[item],parameter_value_list[item],parameter_hstep_list[item]))
 
-    h_a = a*(h/100)
-    h_b = b*(h/100)
-    h_c = c*(h/100)
-    h_d = d*(h/100)
-    h_e = e*(h/100)
-
+    # User inputs all values needed for calculations.
     x_sep = 0.1#float(input("Input separation for each x value: ")) # Determines separation of x values
     x_lower_lim = -3#float(input("Input lower x limit: ")) # Lower x limit
     x_upper_lim = 3#float(input("Input Upper x limit: ")) # Upper x limit
 
+    # Creates list of x values
     x = np.arange(x_lower_lim,x_upper_lim,x_sep) # creates list from 1 to user input
 
-    model_list = []
-    model_da_list = []
-    fps_list = []
-    fps_list_test = []
-    A_list = param(a,h_a)
-    for i in x:
-        model_list.append(model(a,b,c,d,e,i))
-        model_da_list.append(i)
-        fps_list.append(fps(A_list,b,c,d,e,h,i)/(12*h_a))
-        fps_list_test.append(fps(A_list,b,c,d,e,h,i))
+    A = fps_step(float(model_parameters[0].value),float(model_parameters[0].h_step))
+    B = fps_step(float(model_parameters[1].value),float(model_parameters[1].h_step))
+    C = fps_step(float(model_parameters[2].value),float(model_parameters[2].h_step))
+    D = fps_step(float(model_parameters[3].value),float(model_parameters[3].h_step))
+    E = fps_step(float(model_parameters[4].value),float(model_parameters[4].h_step))
+
+    y = np.array([A,B,C,D,E])
+    print(y)
+    #print(y[0][1]) #5.005- [0]: row, [1]: column
+    #print(y[1][0]) #4.008- [1]: row, [0]: column
 
 
-    fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
-    ax.plot(x, model_list, '-.')
-    ax.plot(x,model_da_list, '--')
-    ax.plot(x, fps_list)
-    #ax.plot(x, fps_list_test,'--')
-    plt.show()
+
+    """
+    # A = [ a+2*h , a+h , a-h , a-2*h ]
+    #[a,b,c,d,e]
    
+    fps1st(A,b,c,d,e,x)
+        [-model(A[0],b,c,d,e,x) + 8*model(A[1],b,c,d,e,x) - 8*model(A[2],b,c,d,e,x) + model(A[3],b,c,d,e,x)]/(12*model_parameters[0].h_step)
+
+    fps1st(a,B,c,d,e,x)
+        [-model(a,B[0],c,d,e,x) + 8*model(a,B[1],c,d,e,x) - 8*model(a,B[2],c,d,e,x) + model(a,B[3],c,d,e,x]/(12*model_parameters[1].h_step)
+
+    fps1st(a,b,C,d,e,x)
+        [-model(a,b,C[0],d,e,x) + 8*model(a,b,C[1],d,e,x) - 8*model(a,b,C[2],d,e,x) + model(a,b,C[3],d,e,x)]/(12*model_parameters[2].h_step)
+
+    fps1st(a,b,c,D,e,x)
+        [-model(a,b,c,D[0],e,x) + 8*model(a,b,c,D[1],e,x) - 8*model(a,b,c,D[2],e,x) + model(a,b,c,D[3],e,x)]/(12*model_parameters[3].h_step)
+
+    fps1st(a,b,c,d,E,x)
+        [-model(a,b,c,d,E[0],x) + 8*model(a,b,c,d,E[1],x) - 8*model(a,b,c,d,E[2],x) + model(a,b,c,d,E[3],x)]/(12*model_parameters[4].h_step)
+    """
+    
+
+
+
+
+    """
+    tot = 0
+    for k in x:
+        for j in range(0,len(parameter_name_list)):
+            for i in range(0,len(A)):
+                if A.index(i) == 1:
+                    tot = tot - float(model(i,model_parameters[1].value,model_parameters[2].value,model_parameters[3].value,model_parameters[4].value,k))
+                if A.index(i) == 2:
+                    tot = tot + 8*float(model(i,model_parameters[1].value,model_parameters[2].value,model_parameters[3].value,model_parameters[4].value,k))
+                if A.index(i) == 3:
+                    tot = tot - 8*float(model(i,model_parameters[1].value,model_parameters[2].value,model_parameters[3].value,model_parameters[4].value,k))
+                if A.index(i) == 4:
+                    tot = tot + float(model(i,model_parameters[1].value,model_parameters[2].value,model_parameters[3].value,model_parameters[4].value,k))
+            model_da_output.append(tot/(12*model_parameters[j]))
+    """
+    """
+    for i in x:
+        for j in range(0,len(parameter_name_list)):
+            p1 = model(y[0][],y[1][],y[2][],y[3][],y[4][],i)
+            p2 = model(y[0][],y[1][],y[2][],y[3][],y[4][],i)
+            p3 = model(y[0][],y[1][],y[2][],y[3][],y[4][],i)
+            p4 = model(y[0][],y[1][],y[2][],y[3][],y[4][],i)
+
+    
+    model_output = []
+    model_da_output = []
+    fps_output = []
+    for i in x:
+        model_output.append(model(float(model_parameters[0].value),float(model_parameters[1].value),float(model_parameters[2].value),float(model_parameters[3].value),float(model_parameters[4].value),i))
+        model_da_output.append(model_da(i))
+
+        p1 = model(y[0][0],y[1][2],y[2][2],y[3][2],y[4][2],i)   #this is calculating fps wrt a
+        p2 = model(y[0][1],y[1][2],y[2][2],y[3][2],y[4][2],i)
+        p4 = model(y[0][3],y[1][2],y[2][2],y[3][2],y[4][2],i)
+        p5 = model(y[0][4],y[1][2],y[2][2],y[3][2],y[4][2],i)
+
+        test = (-p1 + 8*p2 - 8*p4 + p5)/(12*float(model_parameters[0].h_step))
+        fps_output.append(test)
+    """
+
 main()
+
