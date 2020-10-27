@@ -1,0 +1,50 @@
+"""
+file for storing functions for MPhys project
+"""
+import math
+
+def model(a,b,c,d,e,x):
+
+    y = a*math.pow(x,4) + b*math.pow(x,3) + c*math.pow(x,2) + d*x + e
+
+    return y
+
+def model_da(x):
+
+    y = math.pow(x,4)
+
+    return y
+"""
+def fps_step(par,h):
+
+    p1 = par + 2*h 
+    p2 = par + h
+    p3 = par - h
+    p4 = par - 2*h
+
+    return [p1, p2, p3, p4]
+
+"""
+
+def param(par,h):
+
+    p1 = par + 2*h 
+    p2 = par + h
+    p3 = par
+    p4 = par - h
+    p5 = par - 2*h
+
+    return [p1, p2, p3, p4, p5]
+
+
+def fps1st([a,b,c,d,e,x],h,i):
+
+    p1 = 
+    p2 = 
+    p3 = 
+    p4 = 
+
+
+
+
+    return y
