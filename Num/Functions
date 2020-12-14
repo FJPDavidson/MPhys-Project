@@ -2,49 +2,55 @@
 file for storing functions for MPhys project
 """
 import math
+import numpy as np
+import itertools
 
 def model(a,b,c,d,e,x):
 
-    y = a*math.pow(x,4) + b*math.pow(x,3) + c*math.pow(x,2) + d*x + e
+    #y = float(a)*math.pow(x,4) + float(b)*math.pow(x,3) + float(c)*math.pow(x,2) + float(d)*x + float(e)
+    y = math.exp(x/(float(a)*float(b))) + float(c)*math.pow(x,float(d)) + float(b)*float(e)
 
     return y
 
-def model_da(x):
+def model_da(a,b,c,d,e,x):
 
-    y = math.pow(x,4)
+    #y = math.pow(x,4)
+    y = -(1/(math.pow(float(a),2)*float(b)))*x*math.log(math.exp(1))*math.exp(x/(float(a)*float(b)))
 
     return y
-"""
-def fps_step(par,h):
 
-    p1 = par + 2*h 
-    p2 = par + h
-    p3 = par - h
-    p4 = par - 2*h
+def model_dada(a,b,c,d,e,x):
 
-    return [p1, p2, p3, p4]
+    #y = 
+    y = (x*math.exp(x/(float(a)*float(b)))*(2*float(a)*float(b) + x))/(math.pow(float(a),4)*math.pow(float(b),2))
 
-"""
+    return y
 
-def param(par,h):
+def model_dadb(a,b,c,d,e,x):
 
-    p1 = par + 2*h 
-    p2 = par + h
-    p3 = par
-    p4 = par - h
-    p5 = par - 2*h
+    #y = 0
+    y = (x*math.exp(x/(float(a)*float(b)))*(float(a)*float(b) + x))/(math.pow(float(a),3)*math.pow(float(b),3))
 
-    return [p1, p2, p3, p4, p5]
+    return y
 
+def model_dadc(a,b,c,d,e,x):
+    
+    #y = 
+    y = 0
+    
+    return y
 
-def fps1st([a,b,c,d,e,x],h,i):
-
-    p1 = 
-    p2 = 
-    p3 = 
-    p4 = 
-
+def model_dcdd(a,b,c,d,e,x):
+    
+    #y = 
+    y = math.pow(x,float(d))*math.log(x)
+    
+    return y  
 
 
-
+def model_revised(list, x):
+    
+    #y = float(a)*math.pow(x,4) + float(b)*math.pow(x,3) + float(c)*math.pow(x,2) + float(d)*x + float(e)
+    y = math.exp(x/(float(list[0])*float(list[1]))) + float(list[2])*math.pow(x,float(list[3])) + float(list[4])
+    
     return y
