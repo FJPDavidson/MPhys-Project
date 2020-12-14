@@ -7,6 +7,7 @@ from MPhys_functions import *
 
 def main():
 
+    print("Step 1: Reading file")
     # Reads in text file which lists all parameters being used in the simulation. it is in the form "name,value,h_step"
     filein = open("param_csv","r")
         
@@ -23,29 +24,25 @@ def main():
         parameter_variation_list.append(tokens[3])
 
     filein.close()
-
+    print("Done.")
+    print("Step 2: Creating parameter objects.")
     model_parameters = []
     for item in range(0,len(parameter_name_list)):
         model_parameters.append(create_parameter(parameter_name_list[item],parameter_value_list[item],parameter_hstep_list[item],parameter_variation_list[item]))
 
+    print("Done.")
+    print("Step 3: Creating x range.")
+
     # User inputs all values needed for calculations.
-    x_sep = 0.1#float(input("Input separation for each x value: ")) # Determines separation of x values
-    x_lower_lim = 0.1#float(input("Input lower x limit: ")) # Lower x limit
-    x_upper_lim = 3#float(input("Input Upper x limit: ")) # Upper x limit
+    x_sep = 0.1###float(input("Input separation for each x value: ")) # Determines separation of x values
+    x_lower_lim = 0.1###float(input("Input lower x limit: ")) # Lower x limit
+    x_upper_lim = 3###float(input("Input Upper x limit: ")) # Upper x limit
 
     # Creates list of x values
     x = np.arange(x_lower_lim,x_upper_lim,x_sep) # creates list from 1 to user input
-
-    """
-    fps1st_a_list = fps1st_step(float(model_parameters[0].value),float(model_parameters[0].h_step))
-    fps1st_b_list = fps1st_step(float(model_parameters[1].value),float(model_parameters[1].h_step))
-    fps1st_c_list = fps1st_step(float(model_parameters[2].value),float(model_parameters[2].h_step))
-    fps1st_d_list = fps1st_step(float(model_parameters[3].value),float(model_parameters[3].h_step))
-    fps1st_e_list = fps1st_step(float(model_parameters[4].value),float(model_parameters[4].h_step))
+    print("Done.")
+    print("Step 4: First Derivative")
     
-    fps1st_param_variation = np.array([fps1st_a_list,fps1st_b_list,fps1st_c_list,fps1st_d_list,fps1st_e_list])
-    fps1st_param_matrix_list = fps1st_param_matrix(fps1st_param_variation,model_parameters[0].value,model_parameters[1].value,model_parameters[2].value,model_parameters[3].value,model_parameters[4].value)
-
     model_da_list = []
     fps1st_a = []
     fps1st_b = []
@@ -53,85 +50,127 @@ def main():
     fps1st_d = []
     fps1st_e = []
 
-    for x_value in x:
-        model_da_list.append(model_da(model_parameters[0].value,model_parameters[1].value,model_parameters[2].value,model_parameters[3].value,model_parameters[4].value,x_value))
-        for n in range(0,len(fps1st_param_matrix_list)):
-            matrix = fps1st_param_matrix_list[n]
-            for i in range(0,len(fps1st_param_variation[0])):
-                if i == 0:
-                    p1 = model(matrix[:,i][0],matrix[:,i][1],matrix[:,i][2],matrix[:,i][3],matrix[:,i][4],x_value)
-                if i == 1:
-                    p2 = model(matrix[:,i][0],matrix[:,i][1],matrix[:,i][2],matrix[:,i][3],matrix[:,i][4],x_value)
-                if i == 2:
-                    p3 = model(matrix[:,i][0],matrix[:,i][1],matrix[:,i][2],matrix[:,i][3],matrix[:,i][4],x_value)
-                if i == 3:
-                    p4 = model(matrix[:,i][0],matrix[:,i][1],matrix[:,i][2],matrix[:,i][3],matrix[:,i][4],x_value)
+    value_list = parameter_value_list
+    fps1st_list = []
+    for p1 in range(0,len(parameter_name_list)):
+        #print("Considering parameter, " + str(model_parameters[p1].name))
 
-            y = (-p1 + 8*p2 -8*p3 + p4)/(12*float(model_parameters[n].h_step))
-            if n == 0:
-                fps1st_a.append(y)
-            if n == 1:
-                fps1st_b.append(y)
-            if n == 2:
-                fps1st_c.append(y)
-            if n == 3:
-                fps1st_d.append(y)
-            if n == 4:
-                fps1st_e.append(y)
-    """
+        double_pos_test_list = value_list[:]
+        double_pos_test_list[p1] = float(model_parameters[p1].value) + 2*float(model_parameters[p1].h_step)
+        single_pos_test_list = value_list[:]
+        single_pos_test_list[p1] = float(model_parameters[p1].value) + float(model_parameters[p1].h_step)
+        single_neg_test_list = value_list[:]
+        single_neg_test_list[p1] = float(model_parameters[p1].value) - float(model_parameters[p1].h_step)
+        double_neg_test_list = value_list[:]
+        double_neg_test_list[p1] = float(model_parameters[p1].value) - 2*float(model_parameters[p1].h_step)
 
-    fps2nd_a_list = fps2nd_step(float(model_parameters[0].value),float(model_parameters[0].h_step))
-    fps2nd_b_list = fps2nd_step(float(model_parameters[1].value),float(model_parameters[1].h_step))
-    fps2nd_c_list = fps2nd_step(float(model_parameters[2].value),float(model_parameters[2].h_step))
-    fps2nd_d_list = fps2nd_step(float(model_parameters[3].value),float(model_parameters[3].h_step))
-    fps2nd_e_list = fps2nd_step(float(model_parameters[4].value),float(model_parameters[4].h_step))
-    
-    fps2nd_param_variation = np.array([fps2nd_a_list,fps2nd_b_list,fps2nd_c_list,fps2nd_d_list,fps2nd_e_list])
-    fps2nd_param_matrix_list = fps2nd_param_matrix(fps2nd_param_variation,model_parameters[0].value,model_parameters[1].value,model_parameters[2].value,model_parameters[3].value,model_parameters[4].value)
+        for x_value in x:
 
-    for i in parameter_name_list:
-        for j in parameter_name_list:
-            index1 = parameter_name_list.index(i)
-            index2 = parameter_name_list.index(j)
+            var = model_da(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+            fps1st_a.append(var)
 
-    test = variable_order(parameter_name_list)
-    print(test)
+            part_1 = model_revised(double_pos_test_list,x_value)
+            part_2 = model_revised(single_pos_test_list,x_value)
+            part_3 = model_revised(single_neg_test_list,x_value)
+            part_4 = model_revised(double_neg_test_list,x_value)
+
+            fps1st = (-part_1 + 8*part_2 - 8*part_3 + part_4)/(12*float(model_parameters[p1].h_step))
+            fps1st_list.append(fps1st)
+    print("First derivative calculated.")
+
+    print("Creating D")
+    D_transpose = []
+    for i in range(0,len(fps1st_list),len(x)):
+        D_transpose.append(fps1st_list[i:i+len(x)])
+
+    D = np.transpose(D_transpose)
+    print("Done.")
+
+
+    print("Step 5: Second derivative.")
+    fps2nd_list = []
+    for p1 in range(0,len(parameter_name_list)):
+        for p2 in range(0,len(parameter_name_list)):
+            if p1 != p2:
                 
-    """
-    for l in range(0,len(fps2nd_param_matrix_list)):
-        for m in range(0,len(fps2nd_param_matrix_list[0])):
-            for n in range(0,len(fps2nd_param_matrix_list[0][0])):
-                matrix = fps2nd_param_matrix_list[l][m][n]
-                print(str(l) + "," + str(m) + "," + str(n) + " = " + str(matrix))
-                for i in range(0,len(parameter_name_list)):
-                    if i == 0:
-                    p1 = model(matrix[0][0][],matrix[1][1][],matrix[2][2][],matrix[3][3][],matrix[4][4][],x)
-                    p2 = model(matrix[0][0][],matrix[1][1][],matrix[2][2][],matrix[3][3][],matrix[4][4][],x)
-                    p3 = model(matrix[0][0][],matrix[1][1][],matrix[2][2][],matrix[3][3][],matrix[4][4][],x)
-                    p4 = model(matrix[0][0][1],matrix[1][1][1],matrix[2][2][1],matrix[3][3][1],matrix[4][4][1],x)
-                    p5 = model(matrix[0][0][],matrix[1][1][],matrix[2][2][],matrix[3][3][],matrix[4][4][],x)
-                    p6 = model(matrix[0][0][],matrix[1][1][],matrix[2][2][],matrix[3][3][],matrix[4][4][],x)
-                    p7 = model(matrix[0][0][],matrix[1][1][],matrix[2][2][],matrix[3][3][],matrix[4][4][],x)
-    """
+                #print("p1 = " + str(parameter_name_list[p1]) + ", p2 = " + str(parameter_name_list[p2])) 
+                double_pos_test_list = value_list[:]
+                double_pos_test_list[p1] = float(model_parameters[p1].value) + float(model_parameters[p1].h_step) 
+                double_pos_test_list[p2] = float(model_parameters[p2].value) + float(model_parameters[p2].h_step)
 
-    #p1 = model() #f(x+h,y+k)
-    #p2 = model() #f(x+h,y)
-    #p3 = model() #f(x,y+k)
-    #p4 = model() #f(x,y)
-    #p5 = model() #f(x-h,y)
-    #p6 = model() #f(x,y-k)
-    #p7 = model() #f(x-h,y-k)
+                single_p1_pos_test_list = value_list[:]
+                single_p2_pos_test_list = value_list[:]
+                single_p1_pos_test_list[p1] = float(model_parameters[p1].value) + float(model_parameters[p1].h_step)
+                single_p2_pos_test_list[p2] = float(model_parameters[p2].value) + float(model_parameters[p2].h_step)
 
-    #y = (p1 - p2 - p3 + 2*p4 - p5 - p6 + p7)/(2*float(model_parameters["first parameter"].value)*float(model_parameters["second parameter"].value))
+                single_p1_neg_test_list = value_list[:]
+                single_p2_neg_test_list = value_list[:]
+                single_p1_neg_test_list[p1] = float(model_parameters[p1].value) - float(model_parameters[p1].h_step)
+                single_p2_neg_test_list[p2] = float(model_parameters[p2].value) - float(model_parameters[p2].h_step)
 
-    #fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
-    #ax.plot(x,model_da_list)
-    #ax.plot(x, fps1st_a, '--')
-    #ax.legend(["Model_da","fps_a"])
-    #ax.set_xlabel("x")
-    #x.set_ylabel("Model")
-    #plt.show()
-    
+                double_neg_test_list = value_list[:]
+                double_neg_test_list[p1] = float(model_parameters[p1].value) - float(model_parameters[p1].h_step) 
+                double_neg_test_list[p2] = float(model_parameters[p2].value) - float(model_parameters[p2].h_step)
+
+                model_dadb_list = []
+                for x_value in x:
+                    var = model_dadb(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+                    model_dadb_list.append(var)
+
+                    part_1 = model_revised(double_pos_test_list,x_value) #f(x+h,y+k)
+                    part_2 = model_revised(single_p1_pos_test_list,x_value) #f(x+h,y)
+                    part_3 = model_revised(single_p2_pos_test_list,x_value) #f(x,y+k)
+                    part_4 = model_revised(value_list,x_value) #f(x,y)
+                    part_5 = model_revised(single_p1_neg_test_list,x_value) #f(x-h,y)
+                    part_6 = model_revised(single_p2_neg_test_list,x_value) #f(x,y-k)
+                    part_7 = model_revised(double_neg_test_list,x_value) #f(x-h,y-k)
+
+                    fps2nd = (part_1 - part_2 - part_3 + 2*part_4 - part_5 - part_6 + part_7)/(2*float(model_parameters[p1].h_step)*float(model_parameters[p2].h_step))
+                    fps2nd_list.append(fps2nd)
+
+            if p1 == p2:
+                #print("p1 = " + str(parameter_name_list[p1]) + ", p2 = " + str(parameter_name_list[p2]))
+                single_pos_test_list = value_list[:]
+                single_pos_test_list[p1] = float(model_parameters[p1].value) + float(model_parameters[p1].h_step)
+
+                single_neg_test_list = value_list[:]
+                single_neg_test_list[p1] = float(model_parameters[p1].value) - float(model_parameters[p1].h_step)
+                
+                model_dada_list = []
+                for x_value in x:
+                    var = model_dada(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+                    model_dada_list.append(var)
+
+                    part_1 = model_revised(single_pos_test_list,x_value)
+                    part_2 = model_revised(value_list,x_value)
+                    part_3 = model_revised(single_neg_test_list,x_value)
+
+                    fps2nd = (part_1 - 2*part_2 + part_3)/math.pow(float(model_parameters[p1].h_step),2)
+                    fps2nd_list.append(fps2nd)
+    print("Second derivatives calculated.")
+    print("Creating Z.")
+    Z_transpose = []
+    for i in range(0,len(fps2nd_list),len(x)):
+        Z_transpose.append(fps2nd_list[i:i+len(x)])
+
+    Z = np.transpose(Z_transpose)
+    print("Done.")
+
+    #print(D)
+    #print(Z)
+    DZ_stacked = np.concatenate((D,Z),axis=1)
+    #print(np.shape(DZ_stacked))
+
+    print("Step 6: Plotting...")
+    fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
+    ax.plot(x, fps1st_a[:29],color='r')
+    ax.plot(x, model_dada_list,color='b')
+    ax.plot(x, D_transpose[0], '--',color='c')
+    ax.plot(x, Z_transpose[0], '--',color='y')
+    ax.legend(["Model_da","Model_dada","fps_a","fps_aa"])
+    ax.set_xlabel("x")
+    ax.set_ylabel("Model")
+    plt.show()
+    print("Done.")
 
 main()
-
