@@ -43,31 +43,48 @@ def main():
     print("Done.")
     print("Step 4: First Derivative")
     
-    model_da_list = []
-    fps1st_a = []
-    fps1st_b = []
-    fps1st_c = []
-    fps1st_d = []
-    fps1st_e = []
+    true_model = []
+    analytic_model_a = []
+    analytic_model_b = []
+    analytic_model_c = []
+    analytic_model_d = []
+    analytic_model_e = []
 
     value_list = parameter_value_list
     fps1st_list = []
     for p1 in range(0,len(parameter_name_list)):
-        #print("Considering parameter, " + str(model_parameters[p1].name))
+        #print("considering: " + str(model_parameters[p1].name))
 
         double_pos_test_list = value_list[:]
         double_pos_test_list[p1] = float(model_parameters[p1].value) + 2*float(model_parameters[p1].h_step)
+        #print(double_pos_test_list)
+
         single_pos_test_list = value_list[:]
         single_pos_test_list[p1] = float(model_parameters[p1].value) + float(model_parameters[p1].h_step)
+        #print(single_pos_test_list)
+
         single_neg_test_list = value_list[:]
         single_neg_test_list[p1] = float(model_parameters[p1].value) - float(model_parameters[p1].h_step)
+        #print(single_neg_test_list)
+
         double_neg_test_list = value_list[:]
         double_neg_test_list[p1] = float(model_parameters[p1].value) - 2*float(model_parameters[p1].h_step)
+        #print(double_neg_test_list)
 
         for x_value in x:
-
-            var = model_da(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
-            fps1st_a.append(var)
+            
+            var = model(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+            true_model.append(var)
+            var_a = model_da(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+            analytic_model_a.append(var_a)
+            var_b = model_db(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+            analytic_model_b.append(var_b)
+            var_c = model_dc(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+            analytic_model_c.append(var_c)
+            var_d = model_dd(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+            analytic_model_d.append(var_d)
+            var_e = model_de(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+            analytic_model_e.append(var_e)
 
             part_1 = model_revised(double_pos_test_list,x_value)
             part_2 = model_revised(single_pos_test_list,x_value)
@@ -84,16 +101,21 @@ def main():
         D_transpose.append(fps1st_list[i:i+len(x)])
 
     D = np.transpose(D_transpose)
+
     print("Done.")
 
-
     print("Step 5: Second derivative.")
+    analytic_model_dada = []
+    analytic_model_dadb = []
+    analytic_model_dadc = []
+    analytic_model_dadd = []
+    analytic_model_dade = []
+
     fps2nd_list = []
     for p1 in range(0,len(parameter_name_list)):
         for p2 in range(0,len(parameter_name_list)):
             if p1 != p2:
-                
-                #print("p1 = " + str(parameter_name_list[p1]) + ", p2 = " + str(parameter_name_list[p2])) 
+                print("p1 = " + str(parameter_name_list[p1]) + ", p2 = " + str(parameter_name_list[p2])) 
                 double_pos_test_list = value_list[:]
                 double_pos_test_list[p1] = float(model_parameters[p1].value) + float(model_parameters[p1].h_step) 
                 double_pos_test_list[p2] = float(model_parameters[p2].value) + float(model_parameters[p2].h_step)
@@ -112,10 +134,17 @@ def main():
                 double_neg_test_list[p1] = float(model_parameters[p1].value) - float(model_parameters[p1].h_step) 
                 double_neg_test_list[p2] = float(model_parameters[p2].value) - float(model_parameters[p2].h_step)
 
-                model_dadb_list = []
                 for x_value in x:
-                    var = model_dadb(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
-                    model_dadb_list.append(var)
+                    var_aa = model_dada(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+                    analytic_model_dada.append(var_aa)
+                    var_ab = model_dadb(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+                    analytic_model_dadb.append(var_ab)
+                    var_ac = model_dadc(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+                    analytic_model_dadc.append(var_ac)
+                    var_ad = model_dadd(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+                    analytic_model_dadd.append(var_ad)
+                    var_ae = model_dade(value_list[0],value_list[1],value_list[2],value_list[3],value_list[4],x_value)
+                    analytic_model_dade.append(var_ae)
 
                     part_1 = model_revised(double_pos_test_list,x_value) #f(x+h,y+k)
                     part_2 = model_revised(single_p1_pos_test_list,x_value) #f(x+h,y)
@@ -129,7 +158,7 @@ def main():
                     fps2nd_list.append(fps2nd)
 
             if p1 == p2:
-                #print("p1 = " + str(parameter_name_list[p1]) + ", p2 = " + str(parameter_name_list[p2]))
+                print("p1 = " + str(parameter_name_list[p1]) + ", p2 = " + str(parameter_name_list[p2]))
                 single_pos_test_list = value_list[:]
                 single_pos_test_list[p1] = float(model_parameters[p1].value) + float(model_parameters[p1].h_step)
 
@@ -156,21 +185,122 @@ def main():
     Z = np.transpose(Z_transpose)
     print("Done.")
 
-    #print(D)
-    #print(Z)
     DZ_stacked = np.concatenate((D,Z),axis=1)
-    #print(np.shape(DZ_stacked))
+    
+    analytic_model_diff_ratio = []
+    a_diff_ratio = []
+    b_diff_ratio = []
+    c_diff_ratio = []
+    d_diff_ratio = []
+    e_diff_ratio = []
+    analytic_model_diff = []
+    a_diff = []
+    b_diff = []
+    c_diff = []
+    d_diff = []
+    e_diff = []
 
+    for i in range(0,len(x)):
+        if analytic_model_a[:29][i] == 0.0:
+            analytic_model_a[:29][i] = D_transpose[3][i]
+        analytic_model_diff_ratio.append(diff_ratio(analytic_model_a[:29][i],analytic_model_a[:29][i]))
+        a_diff_ratio.append(diff_ratio(D_transpose[0][i],analytic_model_a[:29][i]))
+        b_diff_ratio.append(diff_ratio(D_transpose[1][i],analytic_model_b[:29][i]))
+        c_diff_ratio.append(diff_ratio(D_transpose[2][i],analytic_model_c[:29][i]))
+        d_diff_ratio.append(diff_ratio(D_transpose[3][i],analytic_model_d[:29][i]))
+        e_diff_ratio.append(diff_ratio(D_transpose[4][i],analytic_model_e[:29][i]))
+
+        analytic_model_diff.append(difference(analytic_model_a[:29][i],analytic_model_a[:29][i]))
+        a_diff.append(difference(D_transpose[0][i],analytic_model_a[:29][i]))
+        b_diff.append(difference(D_transpose[1][i],analytic_model_b[:29][i]))
+        c_diff.append(difference(D_transpose[2][i],analytic_model_c[:29][i]))
+        d_diff.append(difference(D_transpose[3][i],analytic_model_d[:29][i]))
+        e_diff.append(difference(D_transpose[4][i],analytic_model_e[:29][i]))
+        
+    
+    print(np.shape(Z))
+    """
     print("Step 6: Plotting...")
+
     fig, ax = plt.subplots() # Creates graph with x on x-axis and model values along y
-    ax.plot(x, fps1st_a[:29],color='r')
-    ax.plot(x, model_dada_list,color='b')
-    ax.plot(x, D_transpose[0], '--',color='c')
-    ax.plot(x, Z_transpose[0], '--',color='y')
-    ax.legend(["Model_da","Model_dada","fps_a","fps_aa"])
-    ax.set_xlabel("x")
-    ax.set_ylabel("Model")
+    ax.plot(x, true_model[:29],'-.',color='k')
+    
+    ### First derivatives ###
+    
+    #Analytic model#
+    ax.plot(x, analytic_model_a[:29],color='red')
+    ax.plot(x, analytic_model_b[:29],color='darkorange')
+    ax.plot(x, analytic_model_c[:29],color='darkgreen')
+    ax.plot(x, analytic_model_d[:29],color='mediumblue')
+    ax.plot(x, analytic_model_e[:29],color='purple')
+    
+    #Numerical approximation#
+    ax.plot(x, D_transpose[0],'--',color='yellow')
+    ax.plot(x, D_transpose[1],'--',color='olive')
+    ax.plot(x, D_transpose[2],'--',color='lawngreen')
+    ax.plot(x, D_transpose[3],'--',color='pink')
+    ax.plot(x, D_transpose[4],'--',color='cyan')
+
+    ax.legend(["Arbitrary Function, f(a,b,c,d,e,x)","df/da","df/db","df/dc","df/dd","df/de","FPS (a)","FPS (b)","FPS (c)","FPS (d)","FPS (e)"])
+    ax.set_xlabel("Data vector, x")
+    ax.set_ylabel("f(a,b,c,d,e,x)")
+    
+
+    fig, ax2 = plt.subplots() # Creates graph with x on x-axis and model values along y
+    ax2.plot(x, true_model[:29],'-.',color='k')
+    
+    ### Second derivative ###
+    
+    #analyic model#
+    ax2.plot(x, analytic_model_dada[:29],color='red')
+    ax2.plot(x, analytic_model_dadb[:29],color='darkorange')
+    #ax2.plot(x, analytic_model_dadc[:29],color='darkgreen')
+    #ax2.plot(x, analytic_model_dadd[:29],color='mediumblue')
+    #ax2.plot(x, analytic_model_dade[:29],color='purple')
+
+    #Numerical approximation#
+    ax2.plot(x, Z_transpose[0],'--',color='yellow')
+    ax2.plot(x, Z_transpose[1],'--',color='olive')
+    #ax2.plot(x, Z_transpose[2],'--',color='lawngreen')
+    #ax2.plot(x, Z_transpose[3],'--',color='pink')
+    #ax2.plot(x, Z_transpose[4],'--',color='cyan')
+    
+    ax2.legend(["Arbitrary Function, f(a,b,c,d,e,x)","d^2f/da^2","d^2f/dadb","FD (aa)","FD (ab)"])
+    #ax2.legend(["Model","Model_dada","Model_dadb","Model_dadc","Model_dadd","Model_dade","fps_aa","fps_ab","fps_ac","fps_ad","fps_ae"])
+
+    ax2.set_xlabel("Data vector, x")
+    ax2.set_ylabel("f(a,b,c,d,e,x)")
+    ax2.set_ylim([0,0.015])
+    
+
+    fig, (ax3,ax4) = plt.subplots(2) # Creates graph with x on x-axis and model values along y
+    ax3.plot(x, analytic_model_diff,'-.',color="black")
+    ax3.plot(x, a_diff,color='red')
+    ax3.plot(x, b_diff,color='darkorange')
+    ax3.plot(x, c_diff,color='darkgreen')
+    ax3.plot(x, d_diff,color='mediumblue')
+    ax3.plot(x, e_diff,color='purple')
+
+    ax3.legend(["Model","a","b","c","d","e"])
+    ax3.set_ylabel("analytical - approximation")
+    ax3.set_ylim([-2e-11,1e-11])
+
+    ax4.plot(x, analytic_model_diff_ratio,'-.',color="black")
+    ax4.plot(x, a_diff_ratio,color='red')
+    ax4.plot(x, b_diff_ratio,color='darkorange')
+    ax4.plot(x, c_diff_ratio,color='darkgreen')
+    ax4.plot(x, d_diff_ratio,color='mediumblue')
+    ax4.plot(x, e_diff_ratio,color='purple')
+
+    ax4.legend(["Model","a","b","c","d","e"])
+    ax4.set_xlabel("x")
+    ax4.set_ylabel("(analytical - approximation)/analytical")
+    ax4.set_ylim([-4e-11,5e-11])
+
     plt.show()
+    """
     print("Done.")
+
+
 
 main()
